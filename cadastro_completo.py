@@ -3,6 +3,7 @@ import json
 
 
 
+
 cores = {"limpa": '\033[m',
          "azul": '\033[34m',
          "amarelo": '\033[33m',
@@ -24,27 +25,39 @@ def menu():
         print(
             f'{cores["amarelo"]}{i + 1}{cores["limpa"]} - {cores["azul"]}{k}{cores["limpa"]}')
     print('-' * 30)
+    selecao()
 
 
 
 def cadrastrar():
-    
+    #vai abrir o arquivo pra ver se ja exite 
+    with open(arquivo) as file:
+        result = json.load(file)
     adicionar_produto = str(input('Digite o Produto: ').title())
-    adicionar_quantidade = int(input(f'Digite a quantidade {adicionar_produto} '))
-    try:
-        with open(arquivo, 'r+') as file:
-            print('Registrando . . .')
-            produto[adicionar_produto] = adicionar_quantidade
-            json_produto = json.dumps(produto)
-            file.write(f'{json_produto}\n')
+    #checar se arquivo ja exites
+    for i in result.items():
+        if i[0] !=  adicionar_produto:
+            #se nao exitir vai adicionar
+            adicionar_quantidade = int(input(f'Digite a quantidade {adicionar_produto} '))
+            #abrindo arquivo para escrita
+            with open(arquivo, 'r+') as file:
+                print('Registrando . . .')
+                final_product[adicionar_produto] = adicionar_quantidade
+                print('temporario')
+                #salvando o conteudo do discionario na memoria 
+                json_produto = json.dumps(final_product)
+                print('salvo na memoria')
+                #escrevendo o discionario da memomira + o novo item no arquivo
+                file.write(f'{json_produto}\n')
+                sleep(0.2)
+                print(
+                    f'{cores["verde"]}{final_product[adicionar_produto]}{cores["limpa"]} registrado com sucesso')
+                menu()
+            
+        #se o produto ja existir
+        else:
+            print('Produto ja registrado')
 
-    except:
-        print('Erro, falha no registro')
-    else:
-        sleep(0.2)
-        print(
-            f'{cores["verde"]}{produto[adicionar_produto]}{cores["limpa"]} registrado com sucesso')
-        menu()
 
 
 def lerarquivo():
@@ -54,7 +67,10 @@ def lerarquivo():
             print(f'{"Produtos"} \t{"Quantidade"}')
             result = json.load(file)
             for i, k in result.items():
-                print(f'{i} \t\t   {k}')
+                if len(i) >= 7:
+                    print(f'{i} \t\t{k}')
+                else:
+                    print(f'{i} \t\t\t{k}')
 
         menu()
     except:
@@ -63,11 +79,15 @@ def lerarquivo():
         return True
 
 
+
 def criararquivo():
     if not lerarquivo():
         with open('arquivo.json', 'wt+') as file:
+            file.write('{"Produto": 0}')
             print('criei o arquivo')
-            pass
+            menu()
+    else:
+        pass
 
 
 def deletar():
@@ -75,7 +95,7 @@ def deletar():
         print('a pessoa tal foi deletada')
 
 
-def selecao():      
+def selecao():     
     opcao = int(
         input(f'{cores["amarelo"]}Selecione sua opção: {cores["limpa"]}'))
     while opcao in range(1, 5):
@@ -100,11 +120,15 @@ def selecao():
 
 
 arquivo = 'arquivo.json'
+def copy_list():
+    criararquivo()
+    produto = {}
+    with open(arquivo) as file:
+        result = json.load(file)
+        produto = result.copy()
+    return produto
 produto = {}
-criararquivo()
-with open(arquivo) as file:
-    result = json.load(file)
-    produto = result.copy()
-menu()
+final_product = copy_list()
 selecao()
+
 

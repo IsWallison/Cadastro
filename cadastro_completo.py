@@ -68,7 +68,7 @@ def lerarquivo():
 
 def criararquivo():
     if not lerarquivo():
-        with open('arquivo.txt', 'wt+') as file:
+        with open('arquivo.json', 'wt+') as file:
             print('criei o arquivo')
             pass
 
@@ -82,27 +82,27 @@ def selecao():
     opcao = int(
         input(f'{cores["amarelo"]}Selecione sua opção: {cores["limpa"]}'))
     while opcao in range(1, 5):
-        if opcao not in range(1, 5):
-            print(
-                f'{cores["vermelho"]}Por favor selecione corretamente{cores["limpa"]}')
-            opcao = int(
-                input(f'{cores["amarelo"]}Sua Opção: {cores["limpa"]}'))
-        elif opcao == 1:
-            criararquivo()  # cria / le o arquivo
-        elif opcao == 2:
-            header('CADASTANDO PRODUTOS')
-            cadrastrar()
-        elif opcao == 3:
-            print('Saindo do sistema ... Até logo !!')
-            break
-        elif opcao == 4:
-            print('deletando')
-            deletar()
-        opcao = int(
-            input(f'{cores["amarelo"]}Selecione sua opção: {cores["limpa"]}'))
+        match opcao:
+            case  1:
+                criararquivo()  # cria / le o arquivo
+            case  2:
+                header('CADASTANDO PRODUTOS')
+                cadrastrar()
+            case 3:
+                print('Saindo do sistema ... Até logo !!')
+                break
+            case 4:
+                print('deletando')
+                deletar()
+            case _:
+                print(f'{cores["vermelho"]}Por favor selecione corretamente{cores["limpa"]}')
+                opcao = int(input(f'{cores["amarelo"]}Sua Opção: {cores["limpa"]}'))
+        opcao = int(input(f'{cores["amarelo"]}Selecione sua opção: {cores["limpa"]}'))
+            
 
 
-arquivo = 'arquivo.txt'
+
+arquivo = 'arquivo.json'
 produto = {}
 produtos = []
 menu()

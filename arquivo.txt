@@ -1,0 +1,3 @@
+Dove;15
+Dove;7
+Luva;11

@@ -26,38 +26,35 @@ def menu():
     print('-' * 30)
 
 
-def mostrar():
-    print('produto cadrastadas: ')
-    for i, k in enumerate(produtos):
-        print(f'{k["Produto"]} \t\t{k["Quantidades"]}')
-    menu()
-
 
 def cadrastrar():
-    produto["Produto"] = str(input('Digite o Produto: ').title())
+    
+    adicionar_produto = str(input('Digite o Produto: ').title())
+    adicionar_quantidade = int(input(f'Digite a quantidade {adicionar_produto} '))
     try:
-        with open(arquivo, 'a') as file:
-            produto["Quantidades"] = int(input(f'Digite a quantidade {produto["Produto"]} '))
+        with open(arquivo, 'r+') as file:
             print('Registrando . . .')
-            file.write(f'{produto["Produto"]};{produto["Quantidades"]}\n')
+            produto[adicionar_produto] = adicionar_quantidade
+            json_produto = json.dumps(produto)
+            file.write(f'{json_produto}\n')
 
     except:
         print('Erro, falha no registro')
     else:
         sleep(0.2)
         print(
-            f'{cores["verde"]}{produto["Produto"]}{cores["limpa"]} registrado com sucesso')
+            f'{cores["verde"]}{produto[adicionar_produto]}{cores["limpa"]} registrado com sucesso')
         menu()
 
 
 def lerarquivo():
     try:
-        with open(arquivo, 'r') as file:
+        with open(arquivo) as file:
             header('PRODUTOS CADASTRADOS')
             print(f'{"Produtos"} \t{"Quantidade"}')
-            for linha in file:
-                dado = linha.split(';')
-                print(f'{dado[0]:<20}{dado[1]:>3}',end='')
+            result = json.load(file)
+            for i, k in result.items():
+                print(f'{i} \t\t   {k}')
 
         menu()
     except:
@@ -78,7 +75,7 @@ def deletar():
         print('a pessoa tal foi deletada')
 
 
-def selecao():
+def selecao():      
     opcao = int(
         input(f'{cores["amarelo"]}Selecione sua opção: {cores["limpa"]}'))
     while opcao in range(1, 5):
@@ -104,8 +101,10 @@ def selecao():
 
 arquivo = 'arquivo.json'
 produto = {}
-produtos = []
+criararquivo()
+with open(arquivo) as file:
+    result = json.load(file)
+    produto = result.copy()
 menu()
 selecao()
-
 

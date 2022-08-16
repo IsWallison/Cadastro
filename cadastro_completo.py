@@ -2,8 +2,6 @@ from time import sleep
 import json
 
 
-
-
 cores = {"limpa": '\033[m',
          "azul": '\033[34m',
          "amarelo": '\033[33m',
@@ -19,45 +17,45 @@ def header(txt):
 
 def menu():
     header('MENU PRINCIPAL')
-    options = ['Ver produto cadrastradas',
-               'Cadrastrar nova pessoa', 'Sair do sistema', 'Remover pessoa']
+    options = ['Ver produto cadrastrado',
+               'Cadrastrar nova Produto', 'Sair do sistema', 'Remover Produto']
     for i, k in enumerate(options):
         print(
             f'{cores["amarelo"]}{i + 1}{cores["limpa"]} - {cores["azul"]}{k}{cores["limpa"]}')
     print('-' * 30)
-    selecao()
-
 
 
 def cadrastrar():
-    #vai abrir o arquivo pra ver se ja exite 
-    with open(arquivo) as file:
-        result = json.load(file)
+    # vai abrir o arquivo pra ver se ja exite
     adicionar_produto = str(input('Digite o Produto: ').title())
-    #checar se arquivo ja exites
-    for i in result.items():
-        if i[0] !=  adicionar_produto:
-            #se nao exitir vai adicionar
-            adicionar_quantidade = int(input(f'Digite a quantidade {adicionar_produto} '))
-            #abrindo arquivo para escrita
+    adicionar_quantidade = int(
+        input(f'Digite a quantidade {adicionar_produto} '))
+    # abrindo arquivo para checar
+    with open(arquivo,) as file:
+        result = json.load(file)
+        # checar se arquivo ja exites
+        existe = False
+        for i in result.items():
+            if i[0] == adicionar_produto:
+                existe = True
+    try:
+        # se nao exitir vai adicionar
+        if existe == False:
             with open(arquivo, 'r+') as file:
                 print('Registrando . . .')
                 final_product[adicionar_produto] = adicionar_quantidade
-                print('temporario')
-                #salvando o conteudo do discionario na memoria 
                 json_produto = json.dumps(final_product)
-                print('salvo na memoria')
-                #escrevendo o discionario da memomira + o novo item no arquivo
                 file.write(f'{json_produto}\n')
-                sleep(0.2)
+                sleep(0)
                 print(
-                    f'{cores["verde"]}{final_product[adicionar_produto]}{cores["limpa"]} registrado com sucesso')
-                menu()
-            
-        #se o produto ja existir
+                    f'{cores["verde"]}{adicionar_produto}{cores["limpa"]} registrado com sucesso')
         else:
-            print('Produto ja registrado')
+            print(f'Produto {adicionar_produto} ja exite')
 
+    except:
+        print('Erro, falha no registro')
+    else:
+        menu()
 
 
 def lerarquivo():
@@ -79,7 +77,6 @@ def lerarquivo():
         return True
 
 
-
 def criararquivo():
     if not lerarquivo():
         with open('arquivo.json', 'wt+') as file:
@@ -92,10 +89,10 @@ def criararquivo():
 
 def deletar():
     with open(arquivo, 'rt') as file:
-        print('a pessoa tal foi deletada')
+        print(' Produto tal foi deletado')
 
 
-def selecao():     
+def selecao():
     opcao = int(
         input(f'{cores["amarelo"]}Selecione sua opção: {cores["limpa"]}'))
     while opcao in range(1, 5):
@@ -112,14 +109,17 @@ def selecao():
                 print('deletando')
                 deletar()
             case _:
-                print(f'{cores["vermelho"]}Por favor selecione corretamente{cores["limpa"]}')
-                opcao = int(input(f'{cores["amarelo"]}Sua Opção: {cores["limpa"]}'))
-        opcao = int(input(f'{cores["amarelo"]}Selecione sua opção: {cores["limpa"]}'))
-            
-
+                print(
+                    f'{cores["vermelho"]}Por favor selecione corretamente{cores["limpa"]}')
+                opcao = int(
+                    input(f'{cores["amarelo"]}Sua Opção: {cores["limpa"]}'))
+        opcao = int(
+            input(f'{cores["amarelo"]}Selecione sua opção: {cores["limpa"]}'))
 
 
 arquivo = 'arquivo.json'
+
+
 def copy_list():
     criararquivo()
     produto = {}
@@ -127,8 +127,9 @@ def copy_list():
         result = json.load(file)
         produto = result.copy()
     return produto
+
+
 produto = {}
 final_product = copy_list()
+
 selecao()
-
-
